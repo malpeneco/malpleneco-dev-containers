@@ -32,6 +32,7 @@ set -o errexit -o pipefail -o noclobber -o nounset
 : "${CMAKE_VERSION:=3.24.4-1}"
 : "${RUBY_VERSION:=3.3.7}"
 : "${RUBY_INSTALL_VERSION:=0.9.3}"
+: "${OPENSSL_VERSION:=3.4.1}"
 : "${ARCH:=x64}"
 
 install_cmake() {
@@ -57,6 +58,32 @@ install_ruby() {
   ruby-install --system ruby "${RUBY_VERSION}" -- --without-gmp --disable-dtrace --disable-debug-env --disable-install-doc CC="${CC}"
   popd
   rm -rf "${ruby_install}"
+}
+
+install_openssl() {
+  echo "Running install_openssl for OpenSSL version ${OPENSSL_VERSION}"
+  local openssl_install="${LOCAL_BUILDS}/openssl"
+  mkdir -p "${openssl_install}"
+  pushd "${openssl_install}"
+  
+  # Download OpenSSL source
+  wget -nv "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz"
+  tar -zxf "openssl-${OPENSSL_VERSION}.tar.gz"
+  cd "openssl-${OPENSSL_VERSION}"
+  
+  # Configure with default OpenSSL directory locations
+  ./config --prefix=/usr/local --openssldir=/usr/local/ssl no-shared
+  
+  # Build and install
+  make -j $(nproc)
+  make install
+
+  # Verify installation
+  echo "OpenSSL installation complete. Version installed:"
+  openssl version
+  
+  popd
+  rm -rf "${openssl_install}"
 }
 
 DIR0=$( dirname "$0" )

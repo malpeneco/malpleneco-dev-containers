@@ -39,6 +39,9 @@ on:
           Push the container images to the registry
         required: false
         default: 'false'
+  push:
+    branches: [ main ]
+  pull_request:
 
 concurrency:
   group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
