@@ -31,23 +31,24 @@ ENV TZ=Etc/UTC
 ARG ARCH=x64
 
 RUN apt-get -y update && \
-    apt-get -y install sudo wget git make pkg-config software-properties-common && \
-    add-apt-repository -y ppa:ubuntu-toolchain-r/test                         && \
-    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - && \
+    apt-get -y install sudo wget git make pkg-config software-properties-common      && \
+    add-apt-repository -y ppa:ubuntu-toolchain-r/test                                && \
+    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -        && \
     add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main" && \
-    apt-get -y update && \
-    apt-get -y install clang-14 lldb-14 lld-14 clangd-14 gcc-11 g++-11        \
-    autoconf binutils-dev libevent-dev acl-dev libfmt-dev libjemalloc-dev     \
+    apt-get -y update                                                                && \
+    apt-get -y install clang-14 lld-14 clangd-14 gcc-11 g++-11                \
+    autoconf binutils-dev libevent-dev acl-dev libjemalloc-dev                \
     libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev libssl-dev  \
     libboost-filesystem-dev libboost-program-options-dev libboost-system-dev  \
     libboost-iostreams-dev  libboost-date-time-dev libboost-context-dev       \
     libboost-regex-dev libboost-thread-dev libbrotli-dev libunwind-dev        \
     libdwarf-dev libelf-dev libgoogle-glog-dev libffi-dev libgdbm-dev         \
-    libyaml-dev libncurses-dev libreadline-dev libutfcpp-dev libstdc++-10-dev \
+    libyaml-dev libncurses-dev libreadline-dev libstdc++-11-dev               \
     perl build-essential zlib1g-dev curl gpg gcovr ccache
 
 ENV CC=clang-14
 ENV CXX=clang++-14
+ENV LD=ld.lld-14
 
 COPY tools /opt/tools
 RUN /opt/tools/tools.sh install_cmake && \
