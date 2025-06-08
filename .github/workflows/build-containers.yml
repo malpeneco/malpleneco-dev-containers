@@ -41,6 +41,7 @@ on:
         default: 'false'
   push:
     branches: [ main ]
+    tags: [ "v*" ]
   pull_request:
 
 concurrency:
@@ -122,10 +123,13 @@ jobs:
           images: |
             ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}
           tags: |
-            type=semver,pattern={{version}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }}
-            type=semver,pattern={{major}}.{{minor}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }}
-            type=semver,pattern={{major}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }}
-            type=sha,suffix=-${{ matrix.architecture.suffix2 }}
+            type=semver,pattern={{version}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }},enable=${{ github.event_name == 'workflow_run' }}
+            type=semver,pattern={{version}}-${{ matrix.architecture.suffix2 }},enable=${{ contains(github.ref, 'refs/tags/v') }}
+            type=semver,pattern={{major}}.{{minor}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }},enable=${{ github.event_name == 'workflow_run' }}
+            type=semver,pattern={{major}}.{{minor}}-${{ matrix.architecture.suffix2 }},enable=${{ contains(github.ref, 'refs/tags/v') }}
+            type=semver,pattern={{major}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }},enable=${{ github.event_name == 'workflow_run' }}
+            type=semver,pattern={{major}}-${{ matrix.architecture.suffix2 }},enable=${{ contains(github.ref, 'refs/tags/v') }}
+            type=sha,suffix=-${{ matrix.architecture.suffix2 }}          
           labels: |
             org.opencontainers.image.vendor=Maxim Samsonov
             org.opencontainers.image.licenses=BSD-2-Clause
@@ -139,9 +143,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: docker
-          file: docker/${{ matrix.container }}.Dockerfile
-          push:  ${{ github.event.inputs.push == 'true' }}
+          context: .
+          file: ${{ matrix.container }}.Dockerfile
+          push:  ${{ contains(github.ref, 'refs/tags/v') || github.event_name == 'workflow_run' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
@@ -150,7 +154,7 @@ jobs:
 
   create-manifests:
     name: Create multiarchitecture manifests for ${{ matrix.container }}
-    if: ${{ github.event.inputs.push == 'true' }}
+    if: contains(github.ref, 'refs/tags/v') || github.event_name == 'workflow_run'
     runs-on: ubuntu-22.04
     needs: build-containers
     permissions:
