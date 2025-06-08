@@ -1,6 +1,7 @@
+# Copyright (c) 2025 [Maxim Samsonov](https://www.sw.consulting).
 # Copyright (c) 2024-2025 [Ribose Inc](https://www.ribose.com).
 # All rights reserved.
-# This file is a part of the Tebako project.
+# This file is a part of the Malpeneco project.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions

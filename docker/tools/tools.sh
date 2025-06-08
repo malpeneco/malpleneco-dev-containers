@@ -1,8 +1,9 @@
 #!/bin/bash
 
+# Copyright (c) 2025 [Maxim Samsonov](https://www.sw.consulting).
 # Copyright (c) 2024-2025 [Ribose Inc](https://www.ribose.com).
 # All rights reserved.
-# This file is a part of the Tebako project.
+# This file is a part of the Malpeneco project.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -27,7 +28,7 @@
 
 set -o errexit -o pipefail -o noclobber -o nounset
 
-: "${LOCAL_BUILDS:=/tmp/tebako}"
+: "${LOCAL_BUILDS:=/tmp/malpeneco}"
 : "${CMAKE_VERSION:=3.24.4-1}"
 : "${RUBY_VERSION:=3.3.7}"
 : "${RUBY_INSTALL_VERSION:=0.9.3}"

@@ -1,6 +1,7 @@
+# Copyright (c) 2025 [Maxim Samsonov](https://www.sw.consulting).
 # Copyright (c) 2025 [Ribose Inc](https://www.ribose.com).
 # All rights reserved.
-# This file is a part of the Tebako project.
+# This file is a part of the Malpeneco project.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -116,21 +117,21 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}
+            ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}
           tags: |
             type=semver,pattern={{version}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }}
             type=semver,pattern={{major}}.{{minor}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }}
             type=semver,pattern={{major}}-${{ matrix.architecture.suffix2 }},value=${{ env.VERSION }}
             type=sha,suffix=-${{ matrix.architecture.suffix2 }}
           labels: |
-            org.opencontainers.image.vendor=Ribose Inc.
+            org.opencontainers.image.vendor=Maxim Samsonov
             org.opencontainers.image.licenses=BSD-2-Clause
-            org.opencontainers.image.documentation=https://www.tamatebako.org
+            org.opencontainers.image.documentation=https://www.sw.consulting
             org.opencontainers.image.source==${{ github.repositoryUrl }}
-            org.opencontainers.image.description=Tebako executable packager ${{ matrix.container }} ${{ matrix.architecture.platform }} development container
+            org.opencontainers.image.description=Malpeneco ${{ matrix.container }} ${{ matrix.architecture.platform }} development container
           annotations: |
             org.opencontainers.image.licenses=BSD-2-Clause
-            org.opencontainers.image.description=Tebako executable packager ${{ matrix.container }} ${{ matrix.architecture.platform }} development container
+            org.opencontainers.image.description=Malpeneco ${{ matrix.container }} ${{ matrix.architecture.platform }} development container
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -173,18 +174,18 @@ jobs:
                 base_tag=$(echo $tag | sed -E 's/.*:(.*)-(amd64|arm64)/\1/')
                 echo "Processing $tag, using base tag $base_tag"
                 docker manifest create \
-                  ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:$base_tag \
-                    --amend ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:$base_tag-amd64 \
-                    --amend ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:$base_tag-arm64
-                 docker manifest push ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:$base_tag
+                  ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:$base_tag \
+                    --amend ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:$base_tag-amd64 \
+                    --amend ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:$base_tag-arm64
+                 docker manifest push ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:$base_tag
 
                 if [[ $base_tag == sha* ]]; then
-                  docker manifest push ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:$base_tag
+                  docker manifest push ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:$base_tag
                   docker manifest create \
-                    ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:latest \
-                      --amend ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:$base_tag-amd64 \
-                      --amend ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:$base_tag-arm64
-                  docker manifest push ghcr.io/${{ github.repository_owner }}/tebako-${{ matrix.container }}:latest
+                    ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:latest \
+                      --amend ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:$base_tag-amd64 \
+                      --amend ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:$base_tag-arm64
+                  docker manifest push ghcr.io/${{ github.repository_owner }}/malpeneco-${{ matrix.container }}:latest
                 fi
               fi
             done
