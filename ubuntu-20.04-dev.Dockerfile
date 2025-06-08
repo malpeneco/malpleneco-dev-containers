@@ -32,9 +32,11 @@ ARG ARCH=x64
 
 RUN apt-get -y update && \
     apt-get -y install sudo wget git make pkg-config software-properties-common && \
-    add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    add-apt-repository -y ppa:ubuntu-toolchain-r/test                         && \
+    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - && \
+    add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main" && \
     apt-get -y update && \
-    apt-get -y install clang-12 clang++-12 gcc-11 g++-11                      \
+    apt-get -y install clang-14 lldb-14 lld-14 clangd-14 gcc-11 g++-11        \
     autoconf binutils-dev libevent-dev acl-dev libfmt-dev libjemalloc-dev     \
     libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev libssl-dev  \
     libboost-filesystem-dev libboost-program-options-dev libboost-system-dev  \
@@ -44,8 +46,8 @@ RUN apt-get -y update && \
     libyaml-dev libncurses-dev libreadline-dev libutfcpp-dev libstdc++-10-dev \
     perl build-essential zlib1g-dev curl gpg gcovr ccache
 
-ENV CC=clang-12
-ENV CXX=clang++-12
+ENV CC=clang-14
+ENV CXX=clang++-14
 
 COPY tools /opt/tools
 RUN /opt/tools/tools.sh install_cmake && \
