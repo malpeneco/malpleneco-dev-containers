@@ -29,7 +29,7 @@
 set -o errexit -o pipefail -o noclobber -o nounset
 
 : "${LOCAL_BUILDS:=/tmp/malpeneco}"
-: "${CMAKE_VERSION:=3.24.4-1}"
+: "${CMAKE_VERSION:=3.28.6-1}"
 : "${RUBY_VERSION:=3.3.7}"
 : "${RUBY_INSTALL_VERSION:=0.9.3}"
 : "${OPENSSL_VERSION:=3.4.1}"
