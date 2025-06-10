@@ -72,7 +72,8 @@ install_openssl() {
   cd "openssl-${OPENSSL_VERSION}"
   
   # Configure with default OpenSSL directory locations
-  CC="${CC}" ./config --prefix=/usr/local --openssldir=/usr/local/ssl no-shared
+  CC="${CC}" ./config --prefix=/usr/local --openssldir=/usr/local/ssl 
+  #no-shared
   
   # Build and install
   make -j "$(nproc)"
