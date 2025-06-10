@@ -33,6 +33,7 @@ set -o errexit -o pipefail -o noclobber -o nounset
 : "${RUBY_VERSION:=3.3.7}"
 : "${RUBY_INSTALL_VERSION:=0.9.3}"
 : "${OPENSSL_VERSION:=3.4.1}"
+: "${ZSTD_VERSION:=1.5.5}"
 : "${ARCH:=x64}"
 
 install_cmake() {
@@ -80,11 +81,52 @@ install_openssl() {
   make -j "$(nproc)"
   make install
 
+  # Update ld cache
+  ldconfig
+  
   # Verify installation
   echo "OpenSSL installation complete. Version installed: $(openssl version)"
   
   popd
   rm -rf "${openssl_install}"
+}
+
+install_zstd() {
+  echo "Running install_zstd for zstd version ${ZSTD_VERSION}"
+  local zstd_install="${LOCAL_BUILDS}/zstd"
+  mkdir -p "${zstd_install}"
+  pushd "${zstd_install}"
+  
+  # Download zstd source
+  wget -nv "https://github.com/facebook/zstd/archive/v${ZSTD_VERSION}.tar.gz" -O "zstd-${ZSTD_VERSION}.tar.gz"
+  tar -zxf "zstd-${ZSTD_VERSION}.tar.gz"
+  cd "zstd-${ZSTD_VERSION}"
+  
+  # Build static libraries only (no shared libraries)
+  make -j "$(nproc)" lib-mt
+  make -C lib ZSTD_LIB_MINIFY=1 install-static
+  
+  # Install the CLI tools (static build)
+  cd programs
+  LDFLAGS="-static" make -j "$(nproc)"
+  cp zstd /usr/local/bin/
+  
+  # Create necessary pkg-config file for libzstd.pc
+  mkdir -p /usr/local/lib/pkgconfig
+  cat > /usr/local/lib/pkgconfig/libzstd.pc << EOF
+Name: libzstd
+Description: Fast lossless compression algorithm library
+Version: ${ZSTD_VERSION}
+URL: https://facebook.github.io/zstd/
+Libs: -L/usr/local/lib -lzstd
+Cflags: -I/usr/local/include
+EOF
+  
+  # Verify installation
+  echo "zstd installation complete. Version installed: $(zstd --version | head -n1)"
+  
+  popd
+  rm -rf "${zstd_install}"
 }
 
 DIR0=$( dirname "$0" )

@@ -53,6 +53,7 @@ ENV LD=ld.lld-14
 COPY tools /opt/tools
 RUN /opt/tools/tools.sh install_cmake && \
     /opt/tools/tools.sh install_ruby && \
+    /opt/tools/tools.sh install_zstd && \
     /opt/tools/tools.sh install_openssl
 
 ENV PS1="\[\]\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ \[\]"
