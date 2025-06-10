@@ -73,6 +73,7 @@ install_openssl() {
   
   # Configure with default OpenSSL directory locations
   CC="${CC}" ./config --prefix=/usr/local --openssldir=/usr/local/ssl 
+  
   #no-shared
   
   # Build and install
@@ -80,8 +81,7 @@ install_openssl() {
   make install
 
   # Verify installation
-  echo "OpenSSL installation complete. Version installed:"
-  openssl version
+  echo "OpenSSL installation complete. Version installed: $(openssl version)"
   
   popd
   rm -rf "${openssl_install}"
